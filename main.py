@@ -74,8 +74,10 @@ st.write("Data outlier (jika ada):")
 st.dataframe(outliers)
 
 fig, ax = plt.subplots()
-sns.boxplot(x=df[numeric_col], ax=ax)
-ax.set_title(f"Boxplot kolom {numeric_col}")
+sns.scatterplot(x=range(len(df)), y=df[numeric_col], ax=ax, color="skyblue", s=60)
+ax.set_title(f"Scatterplot kolom {numeric_col}")
+ax.set_xlabel("Index")
+ax.set_ylabel(numeric_col)
 st.pyplot(fig)
 
 st.header("6. Ketidakseimbangan Kelas (Target)")
@@ -92,6 +94,25 @@ fig2, ax2 = plt.subplots()
 sns.countplot(x=df[target_col], palette="pastel", ax=ax2)
 ax2.set_title(f"Distribusi Kelas Target ({target_col})")
 st.pyplot(fig2)
+
+st.header("5. Scatterplot Distribusi Umur terhadap Kelas Recurred")
+numeric_col = "Age" if "Age" in df.columns else "age"
+target_col = "Recurred" if "Recurred" in df.columns else "recurred"
+
+fig, ax = plt.subplots(figsize=(7,4))
+sns.scatterplot(
+    data=df,
+    x=range(len(df)),
+    y=numeric_col,
+    hue=target_col,
+    palette={'no': 'skyblue', 'yes': 'salmon'},
+    s=60,
+    alpha=0.8
+)
+ax.set_title(f"Distribusi {numeric_col} terhadap Kelas {target_col}")
+ax.set_xlabel("Index Data")
+ax.set_ylabel("Age (Usia)")
+st.pyplot(fig)
 
 st.header("7. Tampilkan 5 Baris Teratas & Terbawah")
 col1, col2 = st.columns(2)
