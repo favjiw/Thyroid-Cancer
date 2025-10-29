@@ -8,6 +8,8 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import io
+from sklearn.preprocessing import LabelEncoder
+
 
 st.set_page_config(page_title="Preprocessing Data Thyroid Cancer", layout="wide")
 st.title("Preprocessing Data Thyroid Cancer")
@@ -95,7 +97,7 @@ sns.countplot(x=df[target_col], palette="pastel", ax=ax2)
 ax2.set_title(f"Distribusi Kelas Target ({target_col})")
 st.pyplot(fig2)
 
-st.header("5. Scatterplot Distribusi Umur terhadap Kelas Recurred")
+st.header("Scatterplot Distribusi Umur terhadap Kelas Recurred")
 numeric_col = "Age" if "Age" in df.columns else "age"
 target_col = "Recurred" if "Recurred" in df.columns else "recurred"
 
@@ -114,6 +116,17 @@ ax.set_xlabel("Index Data")
 ax.set_ylabel("Age (Usia)")
 st.pyplot(fig)
 
+st.header('6. Memeriksa Leakage')
+df_encoded = df.copy()
+for col in df_encoded.select_dtypes('object'):
+    df_encoded[col] = LabelEncoder().fit_transform(df_encoded[col])
+
+corr = df_encoded.corr()['Recurred'].sort_values(ascending=False)
+st.write(corr)
+
+df = df.drop(columns=['Response', 'Risk'])
+
+
 st.header("7. Tampilkan 5 Baris Teratas & Terbawah")
 col1, col2 = st.columns(2)
 with col1:
@@ -122,3 +135,4 @@ with col1:
 with col2:
     st.subheader("5 Baris Terbawah")
     st.dataframe(df.tail(5))
+
